@@ -21,6 +21,7 @@ async function extractProblemData() {
             question(titleSlug: $titleSlug) {
               questionId
               title
+              content
               difficulty
               topicTags {
                 name
@@ -60,8 +61,12 @@ async function extractProblemData() {
       }
     }
 
+    const turndownService = new TurndownService();
+    const parsedContent = turndownService.turndown(questionData.content);
+
     return {
       title: questionData.title,
+      content: parsedContent,
       difficulty: questionData.difficulty,
       tags: questionData.topicTags.map((tag) => tag.name),
       problemLink: url,
