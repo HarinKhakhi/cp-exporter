@@ -1,0 +1,48 @@
+/* Simple HTTP Server styles */
+
+.simple-http-server-settings h2 {
+  margin-bottom: 1em;
+}
+
+/* Server control buttons */
+.simple-http-server-controls {
+  display: flex;
+  margin-top: 1.5em;
+}
+
+.simple-http-server-controls button {
+  margin-right: 0.5em;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.simple-http-server-controls button:last-child {
+  margin-right: 0;
+}
+
+/* Status bar item */
+.simple-http-server-status {
+  display: flex;
+  align-items: center;
+}
+
+.simple-http-server-status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.simple-http-server-status-indicator.running {
+  background-color: var(--interactive-success);
+}
+
+.simple-http-server-status-indicator.stopped {
+  background-color: var(--interactive-normal);
+}
+
+.simple-http-server-status-indicator.error {
+  background-color: var(--text-error);
+}
