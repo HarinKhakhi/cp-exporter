@@ -60,12 +60,10 @@ async function extractProblemData() {
       }
     }
 
-    const turndownService = new TurndownService();
-    const parsedContent = turndownService.turndown(questionData.content);
-
     return {
+      questionId: questionData.questionFrontendId,
       title: questionData.title,
-      content: parsedContent,
+      content: questionData.content,
       difficulty: questionData.difficulty,
       tags: questionData.topicTags.map((tag) => tag.name),
       problemLink: url,
