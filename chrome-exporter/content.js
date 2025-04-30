@@ -26,7 +26,6 @@ async function extractProblemData() {
               topicTags {
                 name
               }
-              content
             }
           }
         `,
