@@ -38,8 +38,9 @@ async function extractProblemData() {
     const graphqlData = await graphqlResponse.json();
     const questionData = graphqlData.data.question;
 
-    // Parse currently displayed code
+    // Parse currently displayed code and language
     let currentCode = "";
+    let language = "";
     const codeEditor =
       document.querySelector(".CodeMirror") ||
       document.querySelector(".monaco-editor");
@@ -50,6 +51,12 @@ async function extractProblemData() {
         currentCode = document
           .querySelector(".CodeMirror")
           .CodeMirror.getValue();
+
+        // Get language from CodeMirror mode
+        const mode = document
+          .querySelector(".CodeMirror")
+          .CodeMirror.getMode().name;
+        language = mode === "null" ? "text" : mode;
       } else if (document.querySelector(".monaco-editor")) {
         // Monaco editor - this is more complex and might need a different approach
         // For now, try to get it from the visible content
@@ -57,6 +64,12 @@ async function extractProblemData() {
         currentCode = Array.from(codeLines)
           .map((line) => line.textContent)
           .join("\n");
+
+        // Try to get language from Monaco editor
+        const languageSelector = document.querySelector("[data-mode-id]");
+        if (languageSelector) {
+          language = languageSelector.getAttribute("data-mode-id");
+        }
       }
     }
 
@@ -68,6 +81,7 @@ async function extractProblemData() {
       tags: questionData.topicTags.map((tag) => tag.name),
       problemLink: url,
       currentCode: currentCode,
+      language: language,
       timestamp: new Date().toISOString(),
     };
   } catch (error) {
