@@ -69,7 +69,7 @@ export default class CpExporterPlugin extends Plugin {
       }
 
       // Generate filename from problem title or use a default
-      const title = data.title || "Untitled Problem";
+      const title = `${data.questionId}. ${data.title}` || "Untitled Problem";
       const fileName = `${folderPath}/${this.sanitizeFilename(title)}.md`;
 
       // Create file content with YAML frontmatter and sections

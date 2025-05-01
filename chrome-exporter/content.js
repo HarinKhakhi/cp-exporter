@@ -19,7 +19,7 @@ async function extractProblemData() {
         query: `
           query questionData($titleSlug: String!) {
             question(titleSlug: $titleSlug) {
-              questionId
+              questionFrontendId
               title
               content
               difficulty
@@ -61,6 +61,7 @@ async function extractProblemData() {
     }
 
     return {
+      questionId: questionData.questionFrontendId,
       title: questionData.title,
       content: questionData.content,
       difficulty: questionData.difficulty,
