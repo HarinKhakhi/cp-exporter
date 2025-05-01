@@ -126,6 +126,8 @@ export default class CpExporterPlugin extends Plugin {
     let processedContent = data.content || "";
 
     if (processedContent) {
+      // Remove all newline characters from the content
+      processedContent = processedContent.replace(/\n/g, "");
       processedContent = this.processHtmlImages(
         processedContent,
         data.title || "Untitled Problem"
@@ -152,7 +154,7 @@ Time:
 Space: 
 
 ## Code
-\`\`\`
+\`\`\`${data.language || ""}
 ${data.currentCode || ""}
 \`\`\`
 `;
