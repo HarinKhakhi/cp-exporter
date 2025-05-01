@@ -485,6 +485,7 @@ ${data.currentCode || ""}
             const filePath = `${this.settings.savePath}/${item.localPath}`;
             if (await this.app.vault.adapter.exists(filePath)) {
               console.log(`Skipping: ${filePath} already exists!`);
+              break;
             }
 
             await this.app.vault.createBinary(filePath, arrayBuffer);
