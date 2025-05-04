@@ -24,15 +24,33 @@ document.addEventListener("DOMContentLoaded", function () {
         currentWindow: true,
       });
 
-      // Check if we're on LeetCode
-      if (!tabs[0].url.includes("leetcode.com")) {
-        showStatus("Please navigate to a LeetCode problem page", "error");
+      // Check if we're on a supported CP site
+      const currentUrl = tabs[0].url;
+      const supportedSites = ["leetcode.com", "codeforces.com"];
+      const isOnSupportedSite = supportedSites.some((site) =>
+        currentUrl.includes(site)
+      );
+
+      if (!isOnSupportedSite) {
+        showStatus(
+          "Please navigate to a supported problem page (LeetCode, Codeforces)",
+          "error"
+        );
         return;
+      }
+
+      // Determine which site we're on and use appropriate action
+      let action = "exportProblem";
+
+      if (currentUrl.includes("codeforces.com")) {
+        action = "exportCodeforcesData";
+      } else if (currentUrl.includes("leetcode.com")) {
+        action = "exportLeetcodeData";
       }
 
       // Send message to content script to get problem data
       browser.tabs
-        .sendMessage(tabs[0].id, { action: "exportProblem" })
+        .sendMessage(tabs[0].id, { action: action })
         .then(async (response) => {
           if (!response) {
             showStatus("Failed to extract problem data", "error");

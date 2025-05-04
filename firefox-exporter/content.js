@@ -1,5 +1,5 @@
 // Function to extract problem data from LeetCode page
-async function extractProblemData() {
+async function extractLeetCodeData() {
   try {
     // Get problem titleSlug from the URL
     const url = window.location.href;
@@ -83,25 +83,68 @@ async function extractProblemData() {
       currentCode: currentCode,
       language: language,
       timestamp: new Date().toISOString(),
+      source: "leetcode",
     };
   } catch (error) {
-    console.error("Error extracting problem data:", error);
+    console.error("Error extracting LeetCode problem data:", error);
+    return null;
+  }
+}
+
+// Placeholder function to extract problem data from Codeforces
+async function extractCodeforcesData() {
+  try {
+    const url = window.location.href;
+
+    // TODO: Implement actual Codeforces data extraction
+    // This is just a placeholder that will be updated later
+
+    return {
+      questionId: "placeholder-id",
+      title: document.title || "Codeforces Problem",
+      content: "Placeholder for Codeforces problem content",
+      difficulty: "Medium", // Placeholder
+      tags: [], // Placeholder
+      problemLink: url,
+      currentCode: "", // Placeholder
+      language: "cpp", // Placeholder
+      timestamp: new Date().toISOString(),
+      source: "codeforces",
+    };
+  } catch (error) {
+    console.error("Error extracting Codeforces problem data:", error);
     return null;
   }
 }
 
 // Listen for messages from the popup
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "exportProblem") {
-    extractProblemData()
+  if (request.action === "exportLeetcodeData") {
+    extractLeetCodeData()
       .then((problemData) => {
         console.log(problemData);
         sendResponse(problemData);
       })
       .catch((error) => {
-        console.error("Error in extractProblemData:", error);
+        console.error("Error in extractLeetCodeData:", error);
         sendResponse({ error: error.message });
       });
+  } else if (request.action === "exportCodeforcesData") {
+    extractCodeforcesData()
+      .then((problemData) => {
+        console.log(problemData);
+        sendResponse(problemData);
+      })
+      .catch((error) => {
+        console.error("Error in extractCodeforcesData:", error);
+        sendResponse({ error: error.message });
+      });
+  } else {
+    console.error("Unsupported action:", request.action);
+    sendResponse({
+      error: `Unsupported action: ${request.action}`,
+      message: "This action is not supported by the content script.",
+    });
   }
   return true; // Required for async response
 });

@@ -7,6 +7,7 @@
     "activeTab",
     "storage",
     "https://leetcode.com/*",
+    "https://codeforces.com/*",
     "http://localhost/*"
   ],
   "browser_action": {
@@ -26,7 +27,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://leetcode.com/*"],
+      "matches": ["https://leetcode.com/*", "https://codeforces.com/*"],
       "js": ["content.js"]
     }
   ],
