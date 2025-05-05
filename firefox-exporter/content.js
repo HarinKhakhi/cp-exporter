@@ -83,7 +83,7 @@ async function extractLeetCodeData() {
       currentCode: currentCode,
       language: language,
       timestamp: new Date().toISOString(),
-      source: "leetcode",
+      platform: "leetcode",
     };
   } catch (error) {
     console.error("Error extracting LeetCode problem data:", error);
@@ -91,25 +91,76 @@ async function extractLeetCodeData() {
   }
 }
 
-// Placeholder function to extract problem data from Codeforces
+// Function to extract problem data from Codeforces
 async function extractCodeforcesData() {
   try {
     const url = window.location.href;
 
-    // TODO: Implement actual Codeforces data extraction
-    // This is just a placeholder that will be updated later
+    // Extract contest ID and problem index from URL
+    // URL formats:
+    // - https://codeforces.com/problemset/problem/1234/A
+    // - https://codeforces.com/contest/1234/problem/A
+    // - https://codeforces.com/gym/123456/problem/A
+    let urlParts = url.split("/");
+    let contestId = "";
+    let problemIndex = "";
+
+    if (url.includes("/problemset/problem/")) {
+      contestId = urlParts[urlParts.indexOf("problem") + 1];
+      problemIndex = urlParts[urlParts.indexOf("problem") + 2];
+    } else if (url.includes("/contest/") || url.includes("/gym/")) {
+      const contestPos = url.includes("/contest/")
+        ? urlParts.indexOf("contest")
+        : urlParts.indexOf("gym");
+      contestId = urlParts[contestPos + 1];
+      problemIndex = urlParts[urlParts.indexOf("problem") + 1];
+    } else {
+      throw new Error("Unsupported Codeforces URL format");
+    }
+
+    // Get problem title
+    const titleElement = document.querySelector(".problem-statement .title");
+    let title = "";
+    if (titleElement) {
+      // Remove the problem index (like "A. ") from the title
+      title = titleElement.textContent.trim();
+      if (title.startsWith(problemIndex + ".")) {
+        title = title.substring(problemIndex.length + 1).trim();
+      } else if (title.startsWith(problemIndex + ". ")) {
+        title = title.substring(problemIndex.length + 2).trim();
+      }
+    }
+
+    // Extract tags
+    const tagElements = document.querySelectorAll(".tag-box");
+    const allTags = Array.from(tagElements).map((tag) =>
+      tag.textContent.trim()
+    );
+
+    // Extract difficulty from tags and filter difficulty tags from the final tags array
+    let difficulty = "";
+    const tags = allTags.filter((tag) => {
+      if (tag.startsWith("*")) {
+        // Tag is in format "*num" where num is the difficulty rating
+        difficulty = `"${tag.substring(1)}"`; // Remove the * character and wrap in quotes
+        return false; // Filter out this tag
+      }
+      return true; // Keep other tags
+    });
+
+    // Note: currentCode is left empty as specified in the requirements
 
     return {
-      questionId: "placeholder-id",
-      title: document.title || "Codeforces Problem",
-      content: "Placeholder for Codeforces problem content",
-      difficulty: "Medium", // Placeholder
-      tags: [], // Placeholder
+      questionId: `${contestId} ${problemIndex}`,
+      title: title,
+      content: "",
+      difficulty: difficulty,
+      tags: tags,
       problemLink: url,
-      currentCode: "", // Placeholder
-      language: "cpp", // Placeholder
+      currentCode: "", // Empty as requested
+      language: "", // We'll leave language empty for now
       timestamp: new Date().toISOString(),
-      source: "codeforces",
+      platform: "codeforces",
     };
   } catch (error) {
     console.error("Error extracting Codeforces problem data:", error);
