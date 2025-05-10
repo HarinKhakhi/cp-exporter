@@ -1,0 +1,45 @@
+{
+  "name": "cp-runner",
+  "displayName": "CP Runner",
+  "description": "Run competitive programming problems with test cases from various online judges",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cp-runner.fetchTestCases",
+        "title": "CP Runner: Fetch Test Cases"
+      },
+      {
+        "command": "cp-runner.runCurrentTestCase",
+        "title": "CP Runner: Run Current Test Case"
+      },
+      {
+        "command": "cp-runner.runAllTestCases",
+        "title": "CP Runner: Run All Test Cases"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "^20.10.5",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3"
+  }
+}
