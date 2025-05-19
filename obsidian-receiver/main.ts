@@ -143,11 +143,9 @@ p_tags:
 time_taken: ${data.timeTaken || "-1"}
 tags: 
 ---
-# Problem Statement
-${processedContent}
-
 # Solution 1
 ## Approach
+
 
 ## Analysis
 Time: 
