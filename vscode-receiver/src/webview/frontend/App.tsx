@@ -12,7 +12,6 @@ import {
 } from '../../types';
 import CaseView from './CaseView';
 import Page from './Page';
-// import * as vscode from 'vscode';
 
 let storedLogs = '';
 let notificationTimeout: NodeJS.Timeout | undefined = undefined;

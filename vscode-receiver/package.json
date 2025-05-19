@@ -48,6 +48,11 @@
                 "command": "cph.submitToCodeForces",
                 "title": "Submit to CodeForces",
                 "icon": "dist/static/play.png"
+            },
+            {
+                "command": "cph.exportToObsidian",
+                "title": "Export to Obsidian",
+                "icon": "dist/static/play.png"
             }
         ],
         "keybindings": [
