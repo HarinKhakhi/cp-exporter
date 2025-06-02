@@ -69,7 +69,7 @@ export default class CpExporterPlugin extends Plugin {
       }
 
       // Generate filename from problem title or use a default
-      const title = `${data.questionId}. ${data.title}` || "Untitled Problem";
+      const title = `${data.questionId} ${data.title}` || "Untitled Problem";
       const fileName = `${folderPath}/${this.sanitizeFilename(title)}.md`;
 
       // Create file content with YAML frontmatter and sections
@@ -141,6 +141,7 @@ difficulty: ${data.difficulty || ""}
 p_tags:
   - ${data.tags ? data.tags.join("\n  - ") : ""}
 time_taken: ${data.timeTaken || "-1"}
+score: 0
 tags: 
 ---
 # Solution 1
