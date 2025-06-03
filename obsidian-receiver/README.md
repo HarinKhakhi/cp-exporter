@@ -70,6 +70,12 @@ npm run dev   # Development build with hot reload
 npm run build # Production build
 ```
 
+### Using this plugin in Obsidian
+
+```bash
+cp -r obsidian-receiver ~/Documents/Obsidian/.obsidian/plugins/
+```
+
 ## License
 
 MIT
