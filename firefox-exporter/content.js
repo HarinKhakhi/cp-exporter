@@ -91,6 +91,66 @@ async function extractLeetCodeData() {
   }
 }
 
+function getLastTextNode(elem, selector) {
+  let selectedNode = elem.querySelector(selector);
+
+  const styledNode = selectedNode.querySelector(
+    ".tex-font-style-sl, .tex-font-style-bf"
+  );
+  if (styledNode !== null) {
+    selectedNode = styledNode;
+  }
+
+  const textNodes = [...selectedNode.childNodes].filter(
+    (node) => node.nodeType === Node.TEXT_NODE
+  );
+  return textNodes[textNodes.length - 1];
+}
+
+function decodeHtml(html) {
+  return html
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+
+function parseMainTestBlock(block) {
+  const lines = [...block.querySelectorAll(".test-example-line")].filter(
+    (el) => el.querySelector(".test-example-line, br") === null
+  );
+
+  if (lines.length === 0) {
+    return decodeHtml(block.innerHTML);
+  }
+
+  return [...lines].map((el) => decodeHtml(el.innerHTML)).join("\n");
+}
+
+function getTest(input, output) {
+  function correctData(data, normalizeWhitespace) {
+    data = data.replace(
+      '<div class="open_grepper_editor" title="Edit & Save To Grepper"></div>',
+      ""
+    );
+
+    if (normalizeWhitespace) {
+      data = data
+        .replace(/<br>/g, "\n")
+        .replace(/&nbsp;/g, "")
+        .split("\n")
+        .map((line) => line.trimEnd())
+        .join("\n")
+        .trimEnd();
+    }
+
+    return data.endsWith("\n") || data.length === 0 ? data : data + "\n";
+  }
+  return {
+    input: correctData(input, true),
+    output: correctData(output, true),
+  };
+}
+
 // Function to extract problem data from Codeforces
 async function extractCodeforcesData() {
   try {
@@ -148,7 +208,33 @@ async function extractCodeforcesData() {
       return true; // Keep other tags
     });
 
-    // Note: currentCode is left empty as specified in the requirements
+    const timeLimitNode = getLastTextNode(
+      document,
+      ".problem-statement > .header > .time-limit"
+    );
+    const timeLimitStr = timeLimitNode.textContent.split(" ")[0];
+    const timeLimit = parseFloat(timeLimitStr) * 1000;
+
+    const memoryLimitNode = getLastTextNode(
+      document,
+      ".problem-statement > .header > .memory-limit"
+    );
+    const memoryLimitStr = memoryLimitNode.textContent.split(" ")[0];
+    const memoryLimit = parseInt(memoryLimitStr, 10);
+
+    const inputs = document.querySelectorAll(".input pre");
+    const outputs = document.querySelectorAll(".output pre");
+
+    const tests = [];
+    for (let i = 0; i < inputs.length && i < outputs.length; i++) {
+      tests.push(
+        getTest(parseMainTestBlock(inputs[i]), parseMainTestBlock(outputs[i]))
+      );
+    }
+
+    const cphTitle = document
+      .querySelector(".problem-statement > .header > .title")
+      .textContent.trim();
 
     return {
       questionId: `${contestId} ${problemIndex}`,
@@ -161,6 +247,11 @@ async function extractCodeforcesData() {
       language: "", // We'll leave language empty for now
       timestamp: new Date().toISOString(),
       platform: "codeforces",
+      timeLimit: timeLimit,
+      memoryLimit: memoryLimit,
+      tests: tests,
+      interactive: false,
+      cphTitle: cphTitle,
     };
   } catch (error) {
     console.error("Error extracting Codeforces problem data:", error);
